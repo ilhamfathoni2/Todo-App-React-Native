@@ -11,31 +11,36 @@ import {
 import { TextInputMask } from "react-native-masked-text";
 import { Picker } from "@react-native-picker/picker";
 
-const AddTodo = () => {
+const EditTodo = (props) => {
   const [date, setDate] = useState();
   const [status, setStatus] = useState();
+
+  let nameList = props.route.params.name;
+  let desc = props.route.params.desc;
+  let dates = props.route.params.createdAt;
+  let statusTodo = props.route.params.status;
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
       <View style={styles.bgHead}>
-        <Text style={styles.titleHead}>Add Todo</Text>
+        <Text style={styles.titleHead}>Edit</Text>
       </View>
       <ScrollView>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Todo Name</Text>
-          <TextInput style={styles.bgTodo}></TextInput>
+          <TextInput style={styles.bgTodo}>{nameList}</TextInput>
         </View>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Description</Text>
-          <TextInput style={styles.bgDesc}></TextInput>
+          <TextInput style={styles.bgTodo}>{desc}</TextInput>
         </View>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Date (DD MM YYYY)</Text>
           <TextInputMask
             style={styles.bgTodo}
             type={"datetime"}
-            value={date}
+            value={dates}
             onChangeText={(text) => {
               setDate(text);
             }}
@@ -48,7 +53,7 @@ const AddTodo = () => {
           <Text style={styles.nameTodo}>Status</Text>
           <Picker
             style={styles.bgTodo}
-            selectedValue={status}
+            selectedValue={statusTodo}
             onValueChange={(itemValue, itemIndex) => setStatus(itemValue)}
           >
             <Picker.Item label="Plan" value="Plan" />
@@ -64,7 +69,7 @@ const AddTodo = () => {
   );
 };
 
-export default AddTodo;
+export default EditTodo;
 
 const styles = StyleSheet.create({
   container: {
@@ -99,23 +104,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
   },
-  bgDesc: {
-    flex: 1,
-    fontSize: 18,
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 35,
-    paddingHorizontal: 10,
-    marginHorizontal: 15,
-    marginTop: 5,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
   nameTodo: {
     color: "#787878",
     fontSize: 16,
     fontWeight: "600",
     marginHorizontal: 15,
-    // marginTop: 20,
   },
   status: {
     color: "#0575F3",

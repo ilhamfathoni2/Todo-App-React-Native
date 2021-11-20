@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,47 +8,46 @@ import {
   ScrollView,
 } from "react-native";
 
+import axios from "axios";
+
 const Home = ({ navigation }) => {
+  const [todo, setTodo] = useState([]);
+
+  useEffect(() => {
+    getTodo();
+  }, []);
+
+  const getTodo = () => {
+    axios
+      .get("https://61973b0caf46280017e7e4b0.mockapi.io/todos")
+      .then((res) => {
+        setTodo(res.data);
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  };
+
   return (
     <View style={styles.container}>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       <View style={styles.bgHead}>
         <Text style={styles.titleHead}>My Todo</Text>
-        <Text style={styles.hello}>Always remember your activities!</Text>
+        <Text style={styles.hello}>Let's finish your todo list!</Text>
       </View>
       <ScrollView style={styles.sizeScroll}>
-        <TouchableOpacity style={styles.bgTodo}>
-          <Text style={styles.nameTodo}>Renang</Text>
-          <Text style={styles.status}>Doing</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bgTodo}>
-          <Text style={styles.nameTodo}>Ngoding</Text>
-          <Text style={styles.status}>Doing</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bgTodo}>
-          <Text style={styles.nameTodo}>Debugging</Text>
-          <Text style={styles.status}>Doing</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bgTodo}>
-          <Text style={styles.nameTodo}>Jogging</Text>
-          <Text style={styles.status}>Doing</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bgTodo}>
-          <Text style={styles.nameTodo}>Meeting</Text>
-          <Text style={styles.status}>Doing</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bgTodo}>
-          <Text style={styles.nameTodo}>Deploy React Native</Text>
-          <Text style={styles.status}>Doing</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bgTodo}>
-          <Text style={styles.nameTodo}>Dinner</Text>
-          <Text style={styles.status}>Doing</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bgTodo}>
-          <Text style={styles.nameTodo}>Renang</Text>
-          <Text style={styles.status}>Doing</Text>
-        </TouchableOpacity>
+        {todo?.map((item) => (
+          <View
+            style={styles.bgTodo}
+            onPress={() => navigation.navigate("Edit", item)}
+          >
+            <TouchableOpacity key={item.id} style={styles.btnTodo}>
+              <Text style={styles.nameTodo}>{item.name}</Text>
+              <Text style={styles.status}>{item.status}</Text>
+            </TouchableOpacity>
+            <Text>{item.createdAt}</Text>
+          </View>
+        ))}
       </ScrollView>
       <View style={styles.btn}>
         <TouchableOpacity
@@ -71,23 +70,23 @@ const styles = StyleSheet.create({
   },
   bgHead: {
     backgroundColor: "#0575F3",
-    height: 120,
+    height: 185,
     borderBottomRightRadius: 10,
     borderBottomLeftRadius: 10,
     marginBottom: 20,
   },
   titleHead: {
     color: "#fff",
-    fontSize: 25,
+    fontSize: 35,
     fontWeight: "700",
     paddingHorizontal: 15,
-    marginTop: 40,
+    marginTop: 85,
   },
   hello: {
     color: "#fff",
     fontSize: 16,
     paddingHorizontal: 15,
-    marginTop: 5,
+    marginTop: 6,
   },
   sizeScroll: {
     height: 320,
@@ -95,11 +94,14 @@ const styles = StyleSheet.create({
   bgTodo: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    paddingVertical: 19,
+    paddingVertical: 15,
     paddingHorizontal: 10,
     marginHorizontal: 15,
     marginBottom: 10,
     borderRadius: 5,
+  },
+  btnTodo: {
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignContent: "center",
