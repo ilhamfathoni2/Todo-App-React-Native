@@ -5,27 +5,46 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ScrollView,
+  FlatList,
 } from "react-native";
 
 import axios from "axios";
 
 const Home = ({ navigation }) => {
   const [todo, setTodo] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getTodo();
   }, []);
 
   const getTodo = () => {
+    setIsLoading(true);
     axios
-      .get("https://61973b0caf46280017e7e4b0.mockapi.io/todos")
+      .get("https://61973b0caf46280017e7e4b0.mockapi.io/todo")
       .then((res) => {
         setTodo(res.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         alert(error);
+        setIsLoading(false);
       });
+  };
+
+  const _renderItem = ({ item }) => {
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Edit", item)}
+        style={styles.bgTodo}
+      >
+        <View style={styles.btnTodo}>
+          <Text style={styles.nameTodo}>{item.name}</Text>
+          <Text style={styles.status}>{item.status}</Text>
+        </View>
+        <Text>{item.date}</Text>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -35,20 +54,13 @@ const Home = ({ navigation }) => {
         <Text style={styles.titleHead}>My Todo</Text>
         <Text style={styles.hello}>Let's finish your todo list!</Text>
       </View>
-      <ScrollView style={styles.sizeScroll}>
-        {todo?.map((item) => (
-          <View
-            style={styles.bgTodo}
-            onPress={() => navigation.navigate("Edit", item)}
-          >
-            <TouchableOpacity key={item.id} style={styles.btnTodo}>
-              <Text style={styles.nameTodo}>{item.name}</Text>
-              <Text style={styles.status}>{item.status}</Text>
-            </TouchableOpacity>
-            <Text>{item.createdAt}</Text>
-          </View>
-        ))}
-      </ScrollView>
+      <FlatList
+        data={todo}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={_renderItem}
+        refreshing={isLoading}
+        onRefresh={getTodo}
+      />
       <View style={styles.btn}>
         <TouchableOpacity
           style={styles.btnAdd}
@@ -57,6 +69,7 @@ const Home = ({ navigation }) => {
           <Text style={styles.add}>+</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.bgBtnAdd}></View>
     </View>
   );
 };
@@ -88,9 +101,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     marginTop: 6,
   },
-  sizeScroll: {
-    height: 320,
-  },
   bgTodo: {
     flex: 1,
     backgroundColor: "#FFFFFF",
@@ -119,11 +129,10 @@ const styles = StyleSheet.create({
   btn: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "center",
   },
   btnAdd: {
-    color: "#fff",
-    backgroundColor: "#0575F3",
+    backgroundColor: "#fff",
     width: 50,
     height: 50,
     paddingTop: 10,
@@ -132,11 +141,29 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     textAlign: "center",
     marginHorizontal: 15,
-    marginTop: 20,
+    marginTop: -25,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 13.97,
+    elevation: 20,
+    borderColor: "#0575F3",
+    borderWidth: 0.5,
+    zIndex: 9999,
   },
   add: {
     fontWeight: "500",
     fontSize: 20,
-    color: "#fff",
+    color: "#0575F3",
+  },
+  bgBtnAdd: {
+    backgroundColor: "#0575F3",
+    height: 50,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    zIndex: 9888,
   },
 });

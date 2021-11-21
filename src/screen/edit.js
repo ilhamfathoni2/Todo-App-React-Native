@@ -12,35 +12,35 @@ import { TextInputMask } from "react-native-masked-text";
 import { Picker } from "@react-native-picker/picker";
 
 const EditTodo = (props) => {
-  const [date, setDate] = useState();
-  const [status, setStatus] = useState();
-
   let nameList = props.route.params.name;
   let desc = props.route.params.desc;
-  let dates = props.route.params.createdAt;
+  let dates = props.route.params.date;
   let statusTodo = props.route.params.status;
+
+  const [date, setDate] = useState(dates);
+  const [status, setStatus] = useState(statusTodo);
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
       <View style={styles.bgHead}>
-        <Text style={styles.titleHead}>Edit</Text>
+        <Text style={styles.titleHead}>Detail</Text>
       </View>
       <ScrollView>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Todo Name</Text>
-          <TextInput style={styles.bgTodo}>{nameList}</TextInput>
+          <TextInput style={styles.bgTodo} value={nameList} />
         </View>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Description</Text>
-          <TextInput style={styles.bgTodo}>{desc}</TextInput>
+          <TextInput style={styles.bgTodo} value={desc} />
         </View>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Date (DD MM YYYY)</Text>
           <TextInputMask
             style={styles.bgTodo}
             type={"datetime"}
-            value={dates}
+            value={date}
             onChangeText={(text) => {
               setDate(text);
             }}
@@ -53,8 +53,8 @@ const EditTodo = (props) => {
           <Text style={styles.nameTodo}>Status</Text>
           <Picker
             style={styles.bgTodo}
-            selectedValue={statusTodo}
-            onValueChange={(itemValue, itemIndex) => setStatus(itemValue)}
+            selectedValue={status}
+            onValueChange={(itemValue) => setStatus(itemValue)}
           >
             <Picker.Item label="Plan" value="Plan" />
             <Picker.Item label="Doing" value="Doing" />
@@ -62,8 +62,11 @@ const EditTodo = (props) => {
           </Picker>
         </View>
       </ScrollView>
+      <TouchableOpacity style={styles.btnDel}>
+        <Text style={styles.add}>Delete</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.btnAdd}>
-        <Text style={styles.add}>Save</Text>
+        <Text style={styles.add}>Save Change</Text>
       </TouchableOpacity>
     </View>
   );
@@ -116,12 +119,18 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   btnAdd: {
-    color: "#fff",
     backgroundColor: "#0575F3",
     padding: 10,
     borderRadius: 5,
     marginHorizontal: 15,
     marginBottom: 30,
+  },
+  btnDel: {
+    backgroundColor: "#E02401",
+    padding: 10,
+    borderRadius: 5,
+    marginHorizontal: 15,
+    marginBottom: 15,
   },
   add: {
     fontWeight: "500",

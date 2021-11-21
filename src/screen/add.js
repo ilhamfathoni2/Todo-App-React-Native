@@ -28,7 +28,7 @@ const AddTodo = () => {
         </View>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Description</Text>
-          <TextInput style={styles.bgDesc}></TextInput>
+          <TextInput style={styles.bgTodo}></TextInput>
         </View>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Date (DD MM YYYY)</Text>
@@ -93,17 +93,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     backgroundColor: "#FFFFFF",
     paddingVertical: 15,
-    paddingHorizontal: 10,
-    marginHorizontal: 15,
-    marginTop: 5,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  bgDesc: {
-    flex: 1,
-    fontSize: 18,
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 35,
     paddingHorizontal: 10,
     marginHorizontal: 15,
     marginTop: 5,
