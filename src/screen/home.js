@@ -127,9 +127,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   btn: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
   btnAdd: {
     backgroundColor: "#fff",
@@ -141,7 +140,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     textAlign: "center",
     marginHorizontal: 15,
-    marginTop: -25,
+    marginBottom: -25,
+    marginTop: -20,
     shadowColor: "#000",
     shadowOffset: {
       width: 2,
@@ -162,8 +162,8 @@ const styles = StyleSheet.create({
   bgBtnAdd: {
     backgroundColor: "#0575F3",
     height: 50,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
     zIndex: 9888,
   },
 });
