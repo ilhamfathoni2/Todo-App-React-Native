@@ -10,10 +10,41 @@ import {
 } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 import { Picker } from "@react-native-picker/picker";
+import axios from "axios";
 
 const AddTodo = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [name, setName] = useState();
+  const [desc, setDesc] = useState();
   const [date, setDate] = useState();
-  const [status, setStatus] = useState();
+  const [status, setStatus] = useState("Plan");
+
+  const data = {
+    name,
+    desc,
+    date,
+    status,
+  };
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const body = JSON.stringify(data);
+
+  const saveData = () => {
+    setIsLoading(true);
+    axios
+      .post("https://61973b0caf46280017e7e4b0.mockapi.io/todo", body, config)
+      .then((response) => {
+        setIsLoading(false);
+        alert("Success add todo");
+      })
+      .catch((error) => alert(error));
+  };
 
   return (
     <View style={styles.container}>
@@ -24,11 +55,17 @@ const AddTodo = () => {
       <ScrollView>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Todo Name</Text>
-          <TextInput style={styles.bgTodo}></TextInput>
+          <TextInput
+            style={styles.bgTodo}
+            onChangeText={(value) => setName(value)}
+          />
         </View>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Description</Text>
-          <TextInput style={styles.bgTodo}></TextInput>
+          <TextInput
+            style={styles.bgTodo}
+            onChangeText={(value) => setDesc(value)}
+          />
         </View>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Date (DD MM YYYY)</Text>
@@ -36,9 +73,7 @@ const AddTodo = () => {
             style={styles.bgTodo}
             type={"datetime"}
             value={date}
-            onChangeText={(text) => {
-              setDate(text);
-            }}
+            onChangeText={(value) => setDate(value)}
             options={{
               format: "DD-MM-YYYY",
             }}
@@ -49,7 +84,7 @@ const AddTodo = () => {
           <Picker
             style={styles.bgTodo}
             selectedValue={status}
-            onValueChange={(itemValue, itemIndex) => setStatus(itemValue)}
+            onValueChange={(value) => setStatus(value)}
           >
             <Picker.Item label="Plan" value="Plan" />
             <Picker.Item label="Doing" value="Doing" />
@@ -57,8 +92,8 @@ const AddTodo = () => {
           </Picker>
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.btnAdd}>
-        <Text style={styles.add}>Save</Text>
+      <TouchableOpacity onPress={saveData} style={styles.btnAdd}>
+        <Text style={styles.add}>{isLoading ? "Save..." : "Save"}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -76,7 +111,7 @@ const styles = StyleSheet.create({
     height: 110,
     borderBottomRightRadius: 10,
     borderBottomLeftRadius: 10,
-    marginBottom: 5,
+    marginBottom: 20,
   },
   titleHead: {
     color: "#fff",
@@ -104,7 +139,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginHorizontal: 15,
-    // marginTop: 20,
   },
   status: {
     color: "#0575F3",

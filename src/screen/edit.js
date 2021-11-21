@@ -10,15 +10,64 @@ import {
 } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 import { Picker } from "@react-native-picker/picker";
+import axios from "axios";
 
 const EditTodo = (props) => {
+  let idTodo = props.route.params.id;
   let nameList = props.route.params.name;
-  let desc = props.route.params.desc;
+  let description = props.route.params.desc;
   let dates = props.route.params.date;
   let statusTodo = props.route.params.status;
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [name, setName] = useState(nameList);
+  const [desc, setDesc] = useState(description);
   const [date, setDate] = useState(dates);
   const [status, setStatus] = useState(statusTodo);
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const data = {
+    name,
+    desc,
+    date,
+    status,
+  };
+  const body = JSON.stringify(data);
+
+  const deleteTodo = () => {
+    setIsLoading(true);
+    axios
+      .delete(
+        `https://61973b0caf46280017e7e4b0.mockapi.io/todo/${idTodo}`,
+        config
+      )
+      .then((response) => {
+        setIsLoading(false);
+        alert("Success delete todo!");
+      })
+      .catch((error) => alert(error));
+  };
+
+  const updateTodo = () => {
+    setIsLoading(true);
+    axios
+      .put(
+        `https://61973b0caf46280017e7e4b0.mockapi.io/todo/${idTodo}`,
+        body,
+        config
+      )
+      .then((response) => {
+        setIsLoading(false);
+        alert("Success Update!");
+      })
+      .catch((error) => alert(error));
+  };
 
   return (
     <View style={styles.container}>
@@ -29,11 +78,19 @@ const EditTodo = (props) => {
       <ScrollView>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Todo Name</Text>
-          <TextInput style={styles.bgTodo} value={nameList} />
+          <TextInput
+            style={styles.bgTodo}
+            value={name}
+            onChangeText={(value) => setName(value)}
+          />
         </View>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Description</Text>
-          <TextInput style={styles.bgTodo} value={desc} />
+          <TextInput
+            style={styles.bgTodo}
+            value={desc}
+            onChangeText={(value) => setDesc(value)}
+          />
         </View>
         <View style={styles.mrTop}>
           <Text style={styles.nameTodo}>Date (DD MM YYYY)</Text>
@@ -41,9 +98,7 @@ const EditTodo = (props) => {
             style={styles.bgTodo}
             type={"datetime"}
             value={date}
-            onChangeText={(text) => {
-              setDate(text);
-            }}
+            onChangeText={(value) => setDate(value)}
             options={{
               format: "DD-MM-YYYY",
             }}
@@ -54,7 +109,7 @@ const EditTodo = (props) => {
           <Picker
             style={styles.bgTodo}
             selectedValue={status}
-            onValueChange={(itemValue) => setStatus(itemValue)}
+            onValueChange={(value) => setStatus(value)}
           >
             <Picker.Item label="Plan" value="Plan" />
             <Picker.Item label="Doing" value="Doing" />
@@ -62,11 +117,11 @@ const EditTodo = (props) => {
           </Picker>
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.btnDel}>
+      <TouchableOpacity onPress={deleteTodo} style={styles.btnDel}>
         <Text style={styles.add}>Delete</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btnAdd}>
-        <Text style={styles.add}>Save Change</Text>
+      <TouchableOpacity onPress={updateTodo} style={styles.btnAdd}>
+        <Text style={styles.add}>{isLoading ? "Save..." : "Save Cahange"}</Text>
       </TouchableOpacity>
     </View>
   );

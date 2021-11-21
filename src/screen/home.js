@@ -40,9 +40,17 @@ const Home = ({ navigation }) => {
       >
         <View style={styles.btnTodo}>
           <Text style={styles.nameTodo}>{item.name}</Text>
-          <Text style={styles.status}>{item.status}</Text>
+          {(() => {
+            if (item.status === "Plan") {
+              return <Text style={styles.plan}>{item.status}</Text>;
+            } else if (item.status === "Doing") {
+              return <Text style={styles.doing}>{item.status}</Text>;
+            } else if (item.status === "Done") {
+              return <Text style={styles.done}>{item.status}</Text>;
+            }
+          })()}
         </View>
-        <Text>{item.date}</Text>
+        <Text style={styles.date}>{item.date}</Text>
       </TouchableOpacity>
     );
   };
@@ -117,14 +125,27 @@ const styles = StyleSheet.create({
     alignContent: "center",
   },
   nameTodo: {
-    color: "#090A0C",
+    color: "#393939",
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: "700",
   },
-  status: {
+  date: {
+    color: "#787878",
+  },
+  plan: {
+    color: "#787878",
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  doing: {
     color: "#0575F3",
     fontSize: 15,
-    fontWeight: "600",
+    fontWeight: "bold",
+  },
+  done: {
+    color: "#77D970",
+    fontSize: 15,
+    fontWeight: "bold",
   },
   btn: {
     justifyContent: "flex-end",
